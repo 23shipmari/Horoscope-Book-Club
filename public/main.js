@@ -200,6 +200,36 @@ let zodiac = {
     index: 6 //used for getting the index for the sorting array, starting with aries=0, ending with pisces=11
 };
 
+// const getBookData = () => {
+//     let searchSubject = subjects[zodiac.index][Math.floor(Math.random()*subjects[zodiac.index].length)]; //picks a random one of the possible subjects for that zodiac
+//     bookSearchURL = `https://openlibrary.org/search.json?q=subject%3A(%22Fiction%22+AND+%22${searchSubject}%22)` //makes the url for searching for that subject
+//     console.log(bookSearchURL);
+//     fetch(bookSearchURL) //Grabs URL
+//     .then(response => response.json()) //Converts response from API to JSON
+//     .then(searchData => {
+//         console.log(searchData)
+//         getBook(searchData); //sends the search output to the next step
+//     });
+    
+// }
+
+// const getBook = (searchData) => {
+//     let work = searchData.docs[Math.floor(Math.random()*searchData.docs.length)].key //the api only shows the first 100 of the search, so I choose one of those at random
+//     bookURL = `https://openlibrary.org${work}.json`; //makes the url for getting that specific work
+//     fetch(bookURL)
+//     .then(response => response.json())
+//     .then(bookData => {
+//         getBookCover(bookData); //sends the book details to the next step
+//     });
+// }
+
+// //overall just gets the cover from the api and makes an img tag to throw it in
+// const getBookCover = (bookData) => {
+//     let coverId = bookData.covers[0];
+//     coverURL = `https://covers.openlibrary.org/b/id/${coverId}-L.jpg`
+//     bookImg.innerHTML = `<img src=${coverURL} />`
+// }
+
 const getBookData = () => {
     let searchSubject = subjects[zodiac.index][Math.floor(Math.random()*subjects[zodiac.index].length)]; //picks a random one of the possible subjects for that zodiac
     bookSearchURL = `https://openlibrary.org/search.json?q=subject%3A(%22Fiction%22+AND+%22${searchSubject}%22)` //makes the url for searching for that subject
@@ -207,26 +237,18 @@ const getBookData = () => {
     fetch(bookSearchURL) //Grabs URL
     .then(response => response.json()) //Converts response from API to JSON
     .then(searchData => {
-        console.log(searchData)
-        getBook(searchData); //sends the search output to the next step
+        getBookCover(searchData); //sends the search output to the next step
     });
     
 }
 
-const getBook = (searchData) => {
-    let work = searchData.docs[Math.floor(Math.random()*searchData.docs.length)].key //the api only shows the first 100 of the search, so I choose one of those at random
-    bookURL = `https://openlibrary.org${work}.json`; //makes the url for getting that specific work
-    fetch(bookURL)
-    .then(response => response.json())
-    .then(bookData => {
-        getBookCover(bookData); //sends the book details to the next step
-    });
-}
-
 //overall just gets the cover from the api and makes an img tag to throw it in
 const getBookCover = (bookData) => {
-    let coverId = bookData.covers[0];
-    coverURL = `https://covers.openlibrary.org/b/id/${coverId}-L.jpg`
+    let coverId = bookData?.docs?.[Math.floor(Math.random()*bookData?.docs.length)]?.cover_edition_key;
+    if (coverId == undefined)
+        getBookData();
+    console.log(coverId)
+    coverURL = `https://covers.openlibrary.org/b/olid/${coverId}-L.jpg`
     bookImg.innerHTML = `<img src=${coverURL} />`
 }
 
